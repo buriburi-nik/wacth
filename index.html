@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Watch</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            transition: background 0.5s ease-in-out;
+            overflow: hidden;
+        }
+
+        .watch-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        #digital-watch {
+            font-size: 4rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .am-pm {
+            font-size: 1.2rem;
+            color: #facc15;
+            margin-left: 10px;
+            vertical-align: bottom;
+        }
+
+        #greeting {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        #random-facts {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #ffd700;
+            text-align: center;
+        }
+
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+    </style>
+</head>
+
+<body>
+    <video class="video-background" id="background-video" autoplay muted loop>
+        <source src="morning.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div class="watch-container">
+        <div id="digital-watch"></div><span class="am-pm" id="am-pm"></span>
+    </div>
+    <div id="greeting"></div>
+
+    <script>
+        const watchElement = document.getElementById('digital-watch');
+        const amPmElement = document.getElementById('am-pm');
+        const greetingElement = document.getElementById('greeting');
+        const videoElement = document.getElementById('background-video');
+
+        function updateTime() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const amPm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            watchElement.textContent = `${hours}:${minutes}:${seconds}`;
+            amPmElement.textContent = amPm;
+        }
+
+        function updateBackground() {
+            const now = new Date();
+            const hours = now.getHours();
+            let videoSrc;
+
+            if (hours >= 6 && hours < 12) {
+                videoSrc = 'morning.mp4';  // Morning video
+            } else if (hours >= 12 && hours < 18) {
+                videoSrc = 'afternoon.mp4';  // Afternoon video
+            } else if (hours >= 18 && hours < 21) {
+                videoSrc = 'evening.mp4';  // Evening video
+            } else {
+                videoSrc = 'night.mp4';  // Night video
+            }
+
+            videoElement.src = videoSrc;
+        }
+
+        function updateGreeting() {
+            const now = new Date();
+            const hours = now.getHours();
+            let greeting;
+
+            if (hours < 12) {
+                greeting = 'Good Morning!';
+            } else if (hours < 18) {
+                greeting = 'Good Afternoon!';
+            } else {
+                greeting = 'Good Evening!';
+            }
+
+            greetingElement.textContent = greeting;
+        }
+
+        setInterval(updateTime, 1000);
+        setInterval(updateBackground, 60000);
+        setInterval(updateGreeting, 60000);
+
+        updateTime();
+        updateBackground();
+        updateGreeting();
+    </script>
+</body>
+
+</html>
